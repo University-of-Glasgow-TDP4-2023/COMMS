@@ -1,2 +1,1 @@
-# COMMS
-Communications team repo
+# DSPAssignment3

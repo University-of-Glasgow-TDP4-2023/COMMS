@@ -1,0 +1,160 @@
+
+%--------------- Personalize your document here ---------------
+
+\author{
+\\ Djan Tanova 2542341t} % Enter your name
+
+\newcommand{\studentID}{} % enter your Team No
+\newcommand{\department}{School of Engineering}
+\newcommand{\course}{Team Design Project}
+
+\title{Team 3: Communications} %Enter the title of your report 
+\date{December 2023} % insert a specific date	
+
+% \newcommand{\supervisorone}{Supervisor 1} % Enter your supervisor's name
+% \newcommand{\supervisortwo}{Supervisor 2}% Leave it empty or enter your second supervisor's name 
+%--------------------------------------------------------------
+
+
+
+\documentclass[a4paper,12pt]{article}
+\usepackage[left=30mm,top=30mm,right=30mm,bottom=30mm]{geometry}
+\usepackage{etoolbox} %required for cover page
+\usepackage{booktabs}
+\usepackage[usestackEOL]{stackengine}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{bm}
+\usepackage{svg}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[capitalise]{cleveref}
+\usepackage{enumitem,kantlipsum}
+\usepackage{amssymb}
+\usepackage[square,numbers,sort]{natbib}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{listings}
+\usepackage{minted}
+\usemintedstyle{emacs}
+
+\renewcommand{\listingscaption}{Algorithm}
+\renewcommand{\listoflistingscaption}{List of Algorithms}
+
+%noindent
+\setlength\parindent{0pt}
+
+\bibliographystyle{unsrtnat}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\linespread{1}
+
+\newtheorem{theorem}{Theorem}[section]
+\graphicspath{{figures/}}	
+
+%----------------------------------TITLE PAGE -----------------------------------
+\makeatletter
+\def\maketitle{
+  \begin{center}\leavevmode
+       \normalfont
+       \includegraphics[width=1\columnwidth]{UoG Logo Transparent BG.png}
+       \vskip 1.5cm   
+       \textsc{\large \department}\\
+       \vskip 1.5cm
+       \rule{\linewidth}{0.3 mm} \\
+       \vskip 0.5cm
+       {\large \course}\\[1 cm]
+       {\huge \bfseries \@title \par}
+       \vspace{0.7cm}
+	\rule{\linewidth}{0.2 mm} \\[1.5 cm]
+	
+    \textbf{\large \@author}
+	\vskip 0.5cm
+	\textbf{\studentID}	
+	
+
+	\vfill
+	{\Large \@date\par}
+   \end{center}
+   %\vfill
+   %\null
+   \cleardoublepage
+  }
+\makeatother
+
+
+%-------------------------------- ENDTITLE PAGE ----------------------------------
+
+\begin{document}
+
+\pagenumbering{gobble}% Remove page numbers (and reset to 1)
+
+\maketitle
+
+\clearpage
+\tableofcontents
+\clearpage
+
+
+\pagenumbering{arabic}% Arabic page numbers (and reset to 1)
+
+% This is how you can organize your document
+
+\section{Development Practises}
+\subsection{Git}
+We used Git for source code management and version control in this assignment. The usage of a version control framework has allowed us to reduce confusion while developing, making it much easier for us to stay up to date on the newest version of the project. 
+\newline
+
+\begin{figure}[H]
+%\includegraphics[width=1\columnwidth]{report/figures/gitRepository.png}
+\caption{Git repository of the assignment}
+\end{figure}
+
+\subsection{Pair Programming}
+In order to avoid spending time sorting out merge conflicts, we made use of pair programming throughout the development of our code. The pair programming practice is where one person is the "driver" and is writing the code, while the other person is the "navigator" who reviews the code as it is written.\cite{pairprogramming} This practice has allowed us to write robust code without needing to do many bug-fixing sessions (merging, rebasing, pull requests, etc.)
+\clearpage
+
+\begin{thebibliography}{9}
+\bibitem{}
+
+
+\end{thebibliography}
+
+\end{document}
