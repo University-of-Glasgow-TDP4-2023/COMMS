@@ -54,7 +54,7 @@ static const uint8_t u8x8_d_st7586s_sleep_off[] = {
 static const uint8_t u8x8_d_st7586s_ymc240160_flip0_seq[] = {
   U8X8_START_TRANSFER(),             	/* enable chip, delay is part of the transfer start */
   U8X8_C(0x036),  /* Scan Direction Setting */
-  U8X8_A(0x080),	/* COM159 -> COM0 SEG383 -> SEG0 */
+  U8X8_A(0x000),	/* COM0 -> COM159 SEG0 -> SEG383 */
   U8X8_C(0x037),	/* Start line 0 */
   U8X8_A(0x000),
   U8X8_END_TRANSFER(),  /* disable chip */
@@ -64,9 +64,9 @@ static const uint8_t u8x8_d_st7586s_ymc240160_flip0_seq[] = {
 static const uint8_t u8x8_d_st7586s_ymc240160_flip1_seq[] = {
   U8X8_START_TRANSFER(),             	/* enable chip, delay is part of the transfer start */
   U8X8_C(0x036),  /* Scan Direction Setting */
-  U8X8_A(0x000),  /* COM0 -> COM159 SEG0 -> SEG383 */
+  U8X8_A(0x080),  /* COM0 -> COM159 SEG383 -> SEG0 */
   U8X8_C(0x037),  /* Start line 0 */
-  U8X8_A(0x000),
+  U8X8_A(0x020),
   U8X8_END_TRANSFER(),  /* disable chip */
   U8X8_END()            /* end of sequence */
 };
@@ -103,7 +103,7 @@ static const uint8_t u8x8_d_st7586s_ymc240160_init_seq[] = {
   U8X8_A(0x002), // monochrome and 4-level
 
   U8X8_C(0x036), // Scan Direction Setting
-  U8X8_A(0x080), // COM:C159->C0   SEG: SEG383->SEG0
+  U8X8_A(0x000), // COM:C0->C159   SEG: SEG0->SEG383
 
   U8X8_C(0x0B1), // First output COM
   U8X8_A(0x000), // 
@@ -120,7 +120,7 @@ static const uint8_t u8x8_d_st7586s_ymc240160_init_seq[] = {
   U8X8_A(0x04F), // 80*3=240 pixels
 
   U8X8_C(0x02B), // Row Address Setting
-  U8X8_A(0x000), // ROW0 -> ROW159
+  U8X8_A(0x000), // ROW0 -> ROW127
   U8X8_A(0x000), //
   U8X8_A(0x000), //
   U8X8_A(0x07F), // 128 pixels
