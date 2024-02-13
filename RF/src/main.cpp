@@ -11,7 +11,7 @@ int main(){
     nrf.modeRX(); // Recieving Mode as default
 
     gpio_init(15); // Initialise the LED
-    gpio_set_dir(25,1); // Sets the direction as output from the Pico
+    gpio_set_dir(15,1); // Sets the direction as output from the Pico
 
     gpio_init(14); // Initialise On button
     gpio_set_dir(14,1);
