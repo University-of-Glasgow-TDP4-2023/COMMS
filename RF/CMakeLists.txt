@@ -21,4 +21,6 @@ pico_stdlib
 hardware_spi
 )
 
+pico_enable_stdio_usb(nrf 1)
+pico_enable_stdio_uart(nrf 0)
 pico_add_extra_outputs(nrf)
