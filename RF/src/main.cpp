@@ -6,7 +6,7 @@
 
 int main(){
     stdio_init_all();
-    NRF24 nrf(spi1, 21, 22); // Integer values are pins for CS and CE respectively
+    NRF24 nrf(spi0, 21, 22); // Integer values are pins for CS and CE respectively
     nrf.config();
     nrf.modeRX(); // Recieving Mode as default
 
@@ -30,14 +30,15 @@ int main(){
             sleep_ms(3000);
             nrf.modeTX(); // Switch to TX mode
             sprintf(TXBuffer, "1");
-            nrf.sendMessage(TXBuffer); // Send "On"
+            printf(TXBuffer,"\n");
+            nrf.sendMessage(TXBuffer); // Send the buffer
             nrf.modeRX(); // Switch back to RX
         }
 
         if (nrf.newMessage() == 1) { // If new message recieved
             nrf.receiveMessage(RXBuffer);
-            strcpy(RXBuffer, "Johnny");
-            if(strcmp(RXBuffer, "John") == 0) { // Check if the message is John
+            // strcpy(RXBuffer, "Johnny");
+            if(strcmp(RXBuffer, "1") == 0) { // Check if the message is John
                 printf(RXBuffer,"\n");
                 printf(" Thomas\n");
                 gpio_put(15,1); // If so, turn the light off for 1 second
