@@ -31,4 +31,5 @@
 *.out
 *.app
 
-COMMS/RF/build/
+RF/build/
+RF/.vscode/
