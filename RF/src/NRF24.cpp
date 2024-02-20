@@ -11,7 +11,7 @@ NRF24::NRF24(spi_inst_t *port, uint16_t csn, uint16_t ce)
     this->csn = csn;
     this->ce = ce;
 
-    spi_init(this->port, 1000000 );
+    spi_init(this->port, 8000000 );
     gpio_set_function(20, GPIO_FUNC_SPI); // Serial Clock
     gpio_set_function(18, GPIO_FUNC_SPI); // Serial Data Into NRF
     gpio_set_function(19, GPIO_FUNC_SPI); // Serial Data Out of NRF
