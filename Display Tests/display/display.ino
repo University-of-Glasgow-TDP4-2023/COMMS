@@ -11,6 +11,7 @@
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 #include "shapes.h"
+#include "subject.h"
 
 void u8g2_prepare(void) {
   u8g2.setFont(u8g2_font_6x10_tf);
@@ -21,11 +22,12 @@ void u8g2_prepare(void) {
 }
 
 uint8_t draw_state = 0;
+uint pos = 0;
 
 void draw(void) {
   u8g2_prepare();
   switch(draw_state >> 3) {
-    case 0: u8g2_box_title(draw_state&7); break;
+    case 0: u8g2_main_screen(pos, getSpeed()); break;
     case 1: u8g2_box_frame(draw_state&7); break;
     case 2: u8g2_disc_circle(draw_state&7); break;
     case 3: u8g2_r_frame(draw_state&7); break;
@@ -42,8 +44,6 @@ void draw(void) {
   }
 }
 
-
-
 void setup(void) {
 
   adc_init();
@@ -53,6 +53,7 @@ void setup(void) {
   pinMode(9, OUTPUT);
   digitalWrite(10, 0);
   digitalWrite(9, 0);		
+  setupPins();
 
   u8g2.begin();
   u8g2.setContrast(65); 
@@ -66,20 +67,17 @@ void loop(void) {
   u8g2.firstPage();  
   do {
     draw();
+    //simulate position changing
+    pos = (pos + 1)%100;
+
+    //TODO: Button response here
+    read();
+
   } while( u8g2.nextPage() );
-
-  uint16_t reading = adc_read();
-  if (reading == 3.3) {
-    x = 50;
-  }
-
-  x = x + 10;
-  if (x > 232) {
-    x = 7;
-  }
+  
   if ( draw_state >= 14*8 )
     draw_state = 0;
-
+  
   // delay between each page
   delay(150);
 

@@ -8,7 +8,6 @@
 #include <Wire.h>
 #endif
 
-
 #define starter_text "UofG Electronics Team Project 4:"
 #define cross_width 24
 #define cross_height 24
@@ -42,9 +41,8 @@ U8G2_ST7586S_YMC240160_2_6800 u8g2(U8G2_R0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 int x = 7;
 int sensorPin = A0;
 
-
-//TODO: Create a "main frame" function, make percentage variable
 void u8g2_box_title(uint8_t a) {
+  // 
   u8g2.setBitmapMode(1);
   u8g2.setFontMode(1);
   u8g2.setFont(u8g2_font_6x10_tr);
@@ -53,6 +51,34 @@ void u8g2_box_title(uint8_t a) {
   u8g2.drawStr(5, 92, "Position along the cable: %");
   u8g2.drawLine(5, 110, 234, 110);
   u8g2.drawDisc(x, 110, 2);
+  u8g2.drawFrame(0,0,u8g2.getDisplayWidth(),u8g2.getDisplayHeight() );
+}
+
+
+/*
+ * This function creates the main screen with the representation of the device on the cable
+ *
+ * Parameters:
+ *   - a: An integer up to 100 that represents in percentage where the device is.
+ *
+ * Returns:
+ *   None.
+ */
+void u8g2_main_screen(uint8_t pos, uint8_t speed) {
+  u8g2.setBitmapMode(1);
+  u8g2.setFontMode(1);
+  u8g2.setFont(u8g2_font_6x10_tr);
+  u8g2.drawStr(4, 3, starter_text);
+  u8g2.drawLine(0, 13, 240, 13);
+  char pos_string[50];
+  snprintf(pos_string, sizeof(pos_string), "Position along the cable: %d", pos);
+  u8g2.drawStr(5, 21, pos_string);
+  char speed_string[10];
+  snprintf(speed_string, sizeof(speed_string), "Speed: %d", speed );
+  u8g2.drawStr(5, 51, speed_string);
+  u8g2.setFont(u8g2_font_6x10_tr);
+  u8g2.drawLine(5, 42, 234, 42);
+  u8g2.drawDisc(pos*2, 42, 2);
   u8g2.drawFrame(0,0,u8g2.getDisplayWidth(),u8g2.getDisplayHeight() );
 }
 
