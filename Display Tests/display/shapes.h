@@ -59,8 +59,8 @@ void u8g2_box_title(uint8_t a) {
  * This function creates the main screen with the representation of the device on the cable
  *
  * Parameters:
- *   - a: An integer up to 100 that represents in percentage where the device is.
- *
+ *   - pos: An integer up to 100 that represents in percentage where the device is.
+ *   - speed: An integer that represents the output from the slider.
  * Returns:
  *   None.
  */
@@ -80,6 +80,34 @@ void u8g2_main_screen(uint8_t pos, uint8_t speed) {
   u8g2.drawLine(5, 42, 234, 42);
   u8g2.drawDisc(pos*2, 42, 2);
   u8g2.drawFrame(0,0,u8g2.getDisplayWidth(),u8g2.getDisplayHeight() );
+}
+
+
+void u8g2_startup_screen(void) {
+  // 
+  u8g2.setBitmapMode(1);
+  u8g2.setFontMode(1);
+  u8g2.setFont(u8g2_font_6x10_tr);
+  u8g2.drawStr(80, 50, "University of Glasgow");
+  u8g2.drawStr(80, 60, "Electronics Team project 4, 2023-2024");
+  u8g2.drawStr(80, 70, "Team 3: Communication");
+  u8g2.drawFrame(0,0,u8g2.getDisplayWidth(),u8g2.getDisplayHeight() );
+}
+
+void u8g2_low_battery(void) {
+  // 
+  u8g2.setBitmapMode(1);
+  u8g2.setFontMode(1);
+  u8g2.setFont(u8g2_font_6x10_tr);
+  u8g2.drawStr(160, 51, "Low Battery!");
+}
+
+void u8g2_show_error(void) {
+  // 
+  u8g2.setBitmapMode(1);
+  u8g2.setFontMode(1);
+  u8g2.setFont(u8g2_font_6x10_tr);
+  u8g2.drawStr(80, 51, "WARNING!");
 }
 
 void u8g2_box_frame(uint8_t a) {

@@ -8,10 +8,19 @@
 #include <Wire.h>
 #endif
 
+
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 #include "shapes.h"
 #include "subject.h"
+
+#define REFRESH_PERIOD 150
+
+bool BATTERY_LOW = false; //whether battery is low
+bool ERR = false; //error detected
+bool STARTUP = true; //whether to show startup screen
+int STARTUP_TIME = 2000; //how long to show startup screen for
+
 
 void u8g2_prepare(void) {
   u8g2.setFont(u8g2_font_6x10_tf);
@@ -26,21 +35,13 @@ uint pos = 0;
 
 void draw(void) {
   u8g2_prepare();
-  switch(draw_state >> 3) {
-    case 0: u8g2_main_screen(pos, getSpeed()); break;
-    case 1: u8g2_box_frame(draw_state&7); break;
-    case 2: u8g2_disc_circle(draw_state&7); break;
-    case 3: u8g2_r_frame(draw_state&7); break;
-    case 4: u8g2_string(draw_state&7); break;
-    case 5: u8g2_line(draw_state&7); break;
-    case 6: u8g2_triangle(draw_state&7); break;
-    case 7: u8g2_ascii_1(); break;
-    case 8: u8g2_ascii_2(); break;
-    case 9: u8g2_extra_page(draw_state&7); break;
-    case 10: u8g2_xor(draw_state&7); break;
-    case 11: u8g2_bitmap_modes(0); break;
-    case 12: u8g2_bitmap_modes(1); break;
-    case 13: u8g2_bitmap_overlay(draw_state&7); break;
+  if (ERR){
+    u8g2_show_error();
+    return;
+  }
+  u8g2_main_screen(pos, getSpeed());
+  if (BATTERY_LOW){
+    u8g2_low_battery();
   }
 }
 
@@ -60,25 +61,39 @@ void setup(void) {
   u8g2.clearDisplay();
   u8g2.setDisplayRotation(U8G2_R2);
   u8g2.setFlipMode(0);
+
+  STARTUP = true; //whether to show startup screen
+  STARTUP_TIME = 2000; //how long to show startup screen for
+}
+
+
+void startup(void){
+  u8g2_startup_screen();
+  STARTUP_TIME = STARTUP_TIME-REFRESH_PERIOD;
+  return (STARTUP_TIME-REFRESH_PERIOD > 0);
 }
 
 void loop(void) {
   // picture loop  
   u8g2.firstPage();  
   do {
+
+    if (STARTUP){//check if device is starting up
+      STARTUP = startup();
+    }
+
     draw();
+    //TODO: Get position
     //simulate position changing
     pos = (pos + 1)%100;
 
     //TODO: Button response here
-    read();
-
-  } while( u8g2.nextPage() );
-  
-  if ( draw_state >= 14*8 )
-    draw_state = 0;
+    BATTERY_LOW = getBattery();
+    ERR = false; //get error here
+    setErr(ERR);
+  } while( u8g2.nextPage());
   
   // delay between each page
-  delay(150);
+  delay(REFRESH_PERIOD);
 
 }

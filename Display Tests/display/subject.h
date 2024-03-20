@@ -2,45 +2,47 @@
 #include <SPI.h>
 #include <Wire.h>
 
+#define ADC_MAX 4096
+
 // Define the pin number you want to read from
-const int speedPin = A3; 
-const int selectPin = 27;
-const int powerPin_out = 12;
-const int greenPin_out = 26;
-//const int errPin_out = 20;
+const int speedPin = A3; //Speed slider pin
+const int selectPin = 27; //Select/RST button pin
+const int battPin = 17; //Battery low pin
+const int powerPin_out = 15; //Power green LED pin
+const int errPin_out = 28; //Error Red LED pin
 
-int speedValue;
-int selectValue;
-
+// Initialize the serial communication
 void setupPins() {
-  // Initialize the serial communication
+  
   Serial.begin(9600);
   
   // Set the specified pin as an input
   pinMode(speedPin, INPUT);
   pinMode(selectPin, INPUT);
   pinMode(powerPin_out, OUTPUT);
-  pinMode(greenPin_out, OUTPUT);
-  //pinMode(errPin_out, OUTPUT);
+  pinMode(errPin_out, OUTPUT);
 }
 
-void read() {
-  // Read the value from the digital input pin
-  speedValue = analogRead(speedPin);
-  selectValue = digitalRead(selectPin);
+//Returns the value of the set speed pin
+int getSpeed(void){
+  int in_val = analogRead(speedPin);
+  return abs(in_val - ADC_MAX/2)
 }
 
-int getSpeed(){
-  return speedValue;
+//Returns the value of the set select pin
+int getSelect(void){
+  return digitalRead(selectPin);
 }
 
-void loopRead() {
-  
-
-  // Print the read value to the Serial Monitor
-  Serial.print("IO Pin Value: ");
-  Serial.println(speedPin);
-
-  // Add a delay to make the output readable
-  delay(1000);
+//Checks whether the battery low circuit has triggered
+bool getBattery(){
+  return (digitalRead(battPin) == 1);
 }
+
+//Sets the error LED. SHOULD BE 1 OR 0.
+void setErr(int value){
+  digitalWrite(errPin_out, value);
+}
+
+
+
