@@ -5,9 +5,9 @@
 #define ADC_MAX 4096
 
 // Define the pin number you want to read from
-const int speedPin = A3; //Speed slider pin
+const int speedPin = A0; //Speed slider pin
 const int selectPin = 27; //Select/RST button pin
-const int battPin = 17; //Battery low pin
+const int battPin = 12; //Battery low pin
 const int powerPin_out = 15; //Power green LED pin
 const int errPin_out = 28; //Error Red LED pin
 
@@ -26,7 +26,7 @@ void setupPins() {
 //Returns the value of the set speed pin
 int getSpeed(void){
   int in_val = analogRead(speedPin);
-  return abs(in_val - ADC_MAX/2)
+  return in_val;//abs(in_val - ADC_MAX/2);
 }
 
 //Returns the value of the set select pin
@@ -43,6 +43,5 @@ bool getBattery(){
 void setErr(int value){
   digitalWrite(errPin_out, value);
 }
-
 
 

@@ -19,8 +19,14 @@
 bool BATTERY_LOW = false; //whether battery is low
 bool ERR = false; //error detected
 bool STARTUP = true; //whether to show startup screen
-int STARTUP_TIME = 2000; //how long to show startup screen for
+int STARTUP_TIME = 50000; //how long to show startup screen for
 
+
+volatile int rstState = 0; 
+
+void rst_ISR(){
+  u8g2_show_error();
+}
 
 void u8g2_prepare(void) {
   u8g2.setFont(u8g2_font_6x10_tf);
@@ -54,6 +60,7 @@ void setup(void) {
   pinMode(9, OUTPUT);
   digitalWrite(10, 0);
   digitalWrite(9, 0);		
+  attachInterrupt(27, rst_ISR, FALLING);
   setupPins();
 
   u8g2.begin();
@@ -67,7 +74,7 @@ void setup(void) {
 }
 
 
-void startup(void){
+bool startup(void){
   u8g2_startup_screen();
   STARTUP_TIME = STARTUP_TIME-REFRESH_PERIOD;
   return (STARTUP_TIME-REFRESH_PERIOD > 0);
@@ -80,9 +87,9 @@ void loop(void) {
 
     if (STARTUP){//check if device is starting up
       STARTUP = startup();
+    }else{
+      draw();
     }
-
-    draw();
     //TODO: Get position
     //simulate position changing
     pos = (pos + 1)%100;
@@ -91,6 +98,8 @@ void loop(void) {
     BATTERY_LOW = getBattery();
     ERR = false; //get error here
     setErr(ERR);
+
+
   } while( u8g2.nextPage());
   
   // delay between each page

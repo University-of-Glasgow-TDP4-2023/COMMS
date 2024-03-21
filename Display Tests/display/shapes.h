@@ -88,9 +88,9 @@ void u8g2_startup_screen(void) {
   u8g2.setBitmapMode(1);
   u8g2.setFontMode(1);
   u8g2.setFont(u8g2_font_6x10_tr);
-  u8g2.drawStr(80, 50, "University of Glasgow");
-  u8g2.drawStr(80, 60, "Electronics Team project 4, 2023-2024");
-  u8g2.drawStr(80, 70, "Team 3: Communication");
+  u8g2.drawStr(50, 50, "University of Glasgow");
+  u8g2.drawStr(50, 60, "Electronics Team project 4, 2023-2024");
+  u8g2.drawStr(50, 70, "Team 3: Communication");
   u8g2.drawFrame(0,0,u8g2.getDisplayWidth(),u8g2.getDisplayHeight() );
 }
 
