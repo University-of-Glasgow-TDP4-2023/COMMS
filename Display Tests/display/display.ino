@@ -54,11 +54,11 @@ void draw(void) {
 void setup(void) {
 
   adc_init();
-  adc_gpio_init(15);
+  adc_gpio_init(26);
   adc_select_input(0);
-  pinMode(10, OUTPUT);
+  pinMode(2, OUTPUT);
   pinMode(9, OUTPUT);
-  digitalWrite(10, 0);
+  digitalWrite(2, 0);
   digitalWrite(9, 0);		
   attachInterrupt(27, rst_ISR, FALLING);
   setupPins();
