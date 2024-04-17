@@ -7,7 +7,7 @@
 // Define the pin number you want to read from
 const int speedPin = A0; //Speed slider pin
 const int selectPin = 27; //Select/RST button pin
-const int battPin = 12; //Battery low pin
+const int battPin = 13; //Battery low pin
 const int powerPin_out = 15; //Power green LED pin
 const int errPin_out = 28; //Error Red LED pin
 
