@@ -82,31 +82,36 @@ void RX_TX() {
   if (Serial.available()) {
     char c = toupper(Serial.read());
     if (c == 'T' && !role) { // Become the TX node
-      createPayload(2, 100);
+      createPayload(10, 1000);
       //role = true;
       //radio.stopListening();
     }
     if (c == 'Y' && !role) { // Become the TX node
-      createPayload(1, 100);
+      createPayload(11, 1000);
+    }
+    if (c == 'U' && !role) { // Become the TX node
+      createPayload(11, 2424);
     }
   }
 }
 
 void executePayload(int payload) {
   // Decode the Payload
-  int command = payload / (int)pow(10, floor(log10(payload)));;
+  int command = payload / (int)pow(10, 10 - 2);
+  int data = (payload % (int)pow(10, 10 - 2))/100;
+  
   switch (command) {
-    case 1: // Command One
+    case 10: // Command One
       Serial.println("Juan");
     break;
-    case 2: // Command Two
-      Serial.println("Fresh Fish");
+    case 11: // Command Two
+      Serial.println(data);
     break;
   }
 }
 
 void createPayload(int command, int data) {
-  payload = command * 1000000000;
+  payload = (command * 100000000)+(data * 100);
   role = true;
   radio.stopListening();
 }
