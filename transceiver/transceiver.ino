@@ -82,8 +82,12 @@ void RX_TX() {
   if (Serial.available()) {
     char c = toupper(Serial.read());
     if (c == 'T' && !role) { // Become the TX node
-      role = true;
-      radio.stopListening();
+      createPayload(2, 100);
+      //role = true;
+      //radio.stopListening();
+    }
+    if (c == 'Y' && !role) { // Become the TX node
+      createPayload(1, 100);
     }
   }
 }
@@ -102,7 +106,9 @@ void executePayload(int payload) {
 }
 
 void createPayload(int command, int data) {
-
+  payload = command * 1000000000;
+  role = true;
+  radio.stopListening();
 }
 
 void setup() {
