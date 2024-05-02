@@ -9,7 +9,7 @@ RF24 radio(CE_PIN, CSN_PIN);
 uint8_t address[][6] = { "1Node", "2Node" };
 bool radioNumber = 1;  // 0 uses address[0] to transmit, 1 uses address[1] to transmit
 bool role = false;  // true = TX role, false = RX role
-int payload = 2000000000;
+int payload = 0;
 
 void setupRadio() {
   Serial.begin(115200);
@@ -98,7 +98,7 @@ void RX_TX() {
 void executePayload(int payload) {
   // Decode the Payload
   int command = payload / (int)pow(10, 10 - 2);
-  int data = (payload % (int)pow(10, 10 - 2))/100;
+  int data = (payload % (int)pow(10, 10 - 2))/10000;
   
   switch (command) {
     case 10: // Command One
@@ -111,7 +111,7 @@ void executePayload(int payload) {
 }
 
 void createPayload(int command, int data) {
-  payload = (command * 100000000)+(data * 100);
+  payload = (command * 100000000)+(data * 10000);
   role = true;
   radio.stopListening();
 }
