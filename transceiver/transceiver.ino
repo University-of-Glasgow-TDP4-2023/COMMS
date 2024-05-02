@@ -9,7 +9,7 @@ RF24 radio(CE_PIN, CSN_PIN);
 uint8_t address[][6] = { "1Node", "2Node" };
 bool radioNumber = 1;  // 0 uses address[0] to transmit, 1 uses address[1] to transmit
 bool role = false;  // true = TX role, false = RX role
-int payload = 1000000000;
+int payload = 2000000000;
 
 void setupRadio() {
   Serial.begin(115200);
@@ -25,6 +25,7 @@ void setupRadio() {
   while (!Serial.available()) {
     // wait for user input
   }
+
   char input = Serial.parseInt();
   radioNumber = input == 1;
   Serial.print(F("radioNumber = "));
@@ -42,12 +43,7 @@ void setupRadio() {
   }
 }
 
-void setup() {
-  setupRadio();
-}
-
-void loop() {
-
+void RX_TX() {
   if (role) {
     // This device is a TX node
     unsigned long start_timer = micros();                // start the timer
@@ -79,6 +75,7 @@ void loop() {
       Serial.print(pipe);  // print the pipe number
       Serial.print(F(": "));
       Serial.println(payload);  // print the payload's value
+      executePayload(payload);
     }
   }  // role
 
@@ -89,4 +86,29 @@ void loop() {
       radio.stopListening();
     }
   }
+}
+
+void executePayload(int payload) {
+  // Decode the Payload
+  int command = payload / (int)pow(10, floor(log10(payload)));;
+  switch (command) {
+    case 1: // Command One
+      Serial.println("Juan");
+    break;
+    case 2: // Command Two
+      Serial.println("Fresh Fish");
+    break;
+  }
+}
+
+void createPayload(int command, int data) {
+
+}
+
+void setup() {
+  setupRadio();
+}
+
+void loop() {
+  RX_TX();
 }  // loop
