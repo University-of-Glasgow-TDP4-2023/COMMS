@@ -10,6 +10,7 @@ uint8_t address[][6] = { "1Node", "2Node" };
 bool radioNumber = 1;  // 0 uses address[0] to transmit, 1 uses address[1] to transmit
 bool role = false;  // true = TX role, false = RX role
 int payload = 0;
+int cableLength = 0;
 
 void setupRadio() {
   Serial.begin(115200);
@@ -69,11 +70,6 @@ void RX_TX() {
     if (radio.available(&pipe)) {              // is there a payload? get the pipe number that recieved it
       uint8_t bytes = radio.getPayloadSize();  // get the size of the payload
       radio.read(&payload, bytes);             // fetch payload from FIFO
-      Serial.print(F("Received "));
-      Serial.print(bytes);  // print the size of the payload
-      Serial.print(F(" bytes on pipe "));
-      Serial.print(pipe);  // print the pipe number
-      Serial.print(F(": "));
       Serial.println(payload);  // print the payload's value
       executePayload(payload);
     }
@@ -82,12 +78,10 @@ void RX_TX() {
   if (Serial.available()) {
     char c = toupper(Serial.read());
     if (c == 'T' && !role) { // Become the TX node
-      createPayload(10, 1000);
-      //role = true;
-      //radio.stopListening();
+      sendMotorPacket(405,1,199);
     }
     if (c == 'Y' && !role) { // Become the TX node
-      createPayload(11, 1000);
+      sendCableLength(1000);
     }
     if (c == 'U' && !role) { // Become the TX node
       createPayload(11, 2424);
@@ -95,23 +89,45 @@ void RX_TX() {
   }
 }
 
+// MOTOR INTEGRATION
+void sendCableLength(int length) {
+  int payloadData = (length * 10000);
+  createPayload(10,payloadData);
+}
+void sendMotorPacket(int speed, int direction, int distance) {
+  int payloadData = (speed * 100000 + direction * 10000 + distance * 10);
+  createPayload(11,payloadData);
+}
+void displayMotorData(int data) {
+  int unprocessed_speed = data / 100000;
+  float speed = unprocessed_speed;
+  speed = speed / 100;
+  int direction = (data / 10000) % 10;
+  int distance = (data % 10000)/10;
+  Serial.println(speed);
+  Serial.println(direction);
+  Serial.println(distance-100);
+  Serial.println(cableLength);
+}
+// END OF MOTOR INTEGRATION
+
 void executePayload(int payload) {
   // Decode the Payload
   int command = payload / (int)pow(10, 10 - 2);
-  int data = (payload % (int)pow(10, 10 - 2))/10000;
+  int data = (payload % (int)pow(10, 10 - 2));
   
   switch (command) {
-    case 10: // Command One
-      Serial.println("Juan");
-    break;
-    case 11: // Command Two
-      Serial.println(data);
-    break;
+    case 10: { // Command One - Motor Data
+      cableLength = data/10000;
+    break; }
+    case 11: { // Command Two
+      displayMotorData(data);
+    break; }
   }
 }
 
 void createPayload(int command, int data) {
-  payload = (command * 100000000)+(data * 10000);
+  payload = (command * 100000000)+(data);
   role = true;
   radio.stopListening();
 }
