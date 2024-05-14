@@ -64,7 +64,7 @@ void u8g2_box_title(uint8_t a) {
  * Returns:
  *   None.
  */
-void u8g2_main_screen(uint8_t pos, uint8_t speed) {
+void u8g2_main_screen(uint8_t pos, uint8_t speed, int dir) {
   u8g2.setBitmapMode(1);
   u8g2.setFontMode(1);
   u8g2.setFont(u8g2_font_6x10_tr);
@@ -76,6 +76,11 @@ void u8g2_main_screen(uint8_t pos, uint8_t speed) {
   char speed_string[10];
   snprintf(speed_string, sizeof(speed_string), "Speed: %d", speed );
   u8g2.drawStr(5, 51, speed_string);
+  if (dir == 0){
+    u8g2.drawStr(70, 51, "->");
+  }else{
+    u8g2.drawStr(70, 51, "<-");
+  }
   u8g2.setFont(u8g2_font_6x10_tr);
   u8g2.drawLine(5, 42, 234, 42);
   u8g2.drawDisc(pos*2, 42, 2);
