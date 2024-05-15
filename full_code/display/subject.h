@@ -10,6 +10,7 @@ const int selectPin = 27; //Select/RST button pin
 const int battPin = 13; //Battery low pin
 const int powerPin_out = 15; //Power green LED pin
 const int errPin_out = 28; //Error Red LED pin
+const int buttonPin = 27;  // the number of the pushbutton pin
 
 // Initialize the serial communication
 void setupPins() {
@@ -21,6 +22,8 @@ void setupPins() {
   pinMode(selectPin, INPUT);
   pinMode(powerPin_out, OUTPUT);
   pinMode(errPin_out, OUTPUT);
+  pinMode(buttonPin, INPUT);
+
 }
 
 //Returns the value of the set speed pin
