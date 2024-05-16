@@ -8,6 +8,7 @@
 #include <Wire.h>
 #endif
 
+// #define starter_text "UofG Electronics Team Project 4:"
 #define starter_text "UofG Electronics Team Project 4:"
 #define cross_width 24
 #define cross_height 24
@@ -37,7 +38,7 @@ static const unsigned char cross_block_bits[] U8X8_PROGMEM  = {
   0x01, 0x20, 0xFF, 0x3F, };
 
 
-U8G2_ST7586S_YMC240160_2_6800 u8g2(U8G2_R0, 10, 7, 11, 6, 12, 5, 0, 4, 1, 2, 9, 3);
+U8G2_ST7586S_YMC240160_2_6800 u8g2(U8G2_MIRROR, 10, 7, 11, 6, 12, 5, 0, 4, 1, 2, 9, 3);
 int x = 7;
 int sensorPin = A0;
 
