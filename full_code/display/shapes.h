@@ -191,7 +191,6 @@ void u8g2_ascii_2() {
   }
 }
 
-
 void u8g2_extra_page(uint8_t a)
 {
   u8g2.drawStr( 0, 0, "Unicode");
@@ -231,7 +230,6 @@ void u8g2_xor(uint8_t a) {
   u8g2.setFontMode(0);
     
 }
-
 
 void u8g2_bitmap_overlay(uint8_t a) {
   uint8_t frame_size = 28;

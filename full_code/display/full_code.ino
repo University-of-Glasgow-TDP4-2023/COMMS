@@ -13,7 +13,8 @@
 #include "hardware/adc.h"
 #include "shapes.h"
 #include "subject.h"
-// #include "transceiver.h"
+#include "printf.h"
+#include "RF24.h"
 
 #define REFRESH_PERIOD 150
 
@@ -22,13 +23,9 @@ bool ERR = false; //error detected
 bool STARTUP = true; //whether to show startup screen
 int STARTUP_TIME = 50000; //how long to show startup screen for
 
-
 volatile int rstState = 0; 
 
 // START OF RF Code
-#include <SPI.h>
-#include "printf.h"
-#include "RF24.h"
 
 #define CE_PIN 22
 #define CSN_PIN 21
@@ -194,10 +191,14 @@ void createPayload(int command, int data) {
 }
 // END OF RF Code
 
+
+// START OF DISPLAY CODE
+
+//ISR Response
 void rst_ISR(){
   u8g2_show_error();
 }
-
+//Set Display Options
 void u8g2_prepare(void) {
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setFontRefHeightExtendedText();
@@ -221,6 +222,8 @@ void draw(void) {
     u8g2_low_battery();
   }
 }
+
+//END OF DISPLAY CODE
 
 void setup(void) {
 
@@ -264,6 +267,7 @@ void loop(void) {
     }else{
       draw();
     }
+
     //TODO: Get position#
     int data = getData();
     int unprocessed_speed = data / 100000;
@@ -273,14 +277,11 @@ void loop(void) {
     int distance = ((data % 10000)/10)-100;
     pos = distance;
     dir = direction;
-    //simulate position changing
-    //pos = (pos + 1)%100;
 
     //TODO: Button response here
     BATTERY_LOW = getBattery();
     ERR = false; //get error here
     setErr(ERR);
-
 
   } while( u8g2.nextPage());
   
