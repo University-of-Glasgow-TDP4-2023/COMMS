@@ -65,26 +65,56 @@ void u8g2_box_title(uint8_t a) {
  * Returns:
  *   None.
  */
-void u8g2_main_screen(uint8_t pos, uint8_t speed, int dir) {
+void u8g2_main_screen(uint8_t position, uint8_t speed, int direction, int stabilisation, int flash_count) {
   u8g2.setBitmapMode(1);
   u8g2.setFontMode(1);
   u8g2.setFont(u8g2_font_6x10_tr);
   u8g2.drawStr(4, 3, starter_text);
   u8g2.drawLine(0, 13, 240, 13);
-  char pos_string[50];
-  snprintf(pos_string, sizeof(pos_string), "Position along the cable: %d", pos);
-  u8g2.drawStr(5, 21, pos_string);
-  char speed_string[10];
-  snprintf(speed_string, sizeof(speed_string), "Speed: %d", speed );
+
+  // Position
+  char position_string[50];
+  snprintf(position_string, sizeof(position_string), "Position along the cable: %d%%", position);
+  u8g2.drawStr(5, 21, position_string);
+
+  // Speed
+  char speed_string[14];
+  snprintf(speed_string, sizeof(speed_string), "Speed: %dm/s", speed );
   u8g2.drawStr(5, 51, speed_string);
-  if (dir == 0){
-    u8g2.drawStr(70, 51, "->");
+
+  // Percentage
+  char percentage_string[50];
+  snprintf(percentage_string, sizeof(percentage_string), "Percentage along cable: %d%%", position);
+  u8g2.drawStr(5, 60, percentage_string);
+
+  // Stabilisation
+  char stabilisation_string[50];
+  if (stabilisation == 0) {
+    snprintf(stabilisation_string, sizeof(stabilisation_string), "Stabilisation Off");
+  }
+  if (stabilisation == 1) {
+    snprintf(stabilisation_string, sizeof(stabilisation_string), "Stabilisation On");
+  }
+  u8g2.drawStr(5, 75, stabilisation_string);
+
+  // Error - Stabilisation
+  char error_string[50];
+  if (flash_count <= 7) {
+    snprintf(error_string, sizeof(error_string), "IMU Error");
+  }
+  else {
+    snprintf(error_string, sizeof(error_string), " ");
+  }
+  u8g2.drawStr(5, 88, error_string);
+  
+  if (direction == 0){
+    u8g2.drawStr(79, 51, "->");
   }else{
-    u8g2.drawStr(70, 51, "<-");
+    u8g2.drawStr(79, 51, "<-");
   }
   u8g2.setFont(u8g2_font_6x10_tr);
   u8g2.drawLine(5, 42, 234, 42);
-  u8g2.drawDisc(pos*2, 42, 2);
+  u8g2.drawDisc(position*2, 42, 2);
   u8g2.drawFrame(0,0,u8g2.getDisplayWidth(),u8g2.getDisplayHeight() );
 }
 
@@ -108,12 +138,12 @@ void u8g2_low_battery(void) {
   u8g2.drawStr(160, 51, "Low Battery!");
 }
 
-void u8g2_show_error(const char * message) {
+void u8g2_show_error(void) {
   // 
   u8g2.setBitmapMode(1);
   u8g2.setFontMode(1);
   u8g2.setFont(u8g2_font_6x10_tr);
-  u8g2.drawStr(80, 51, message);
+  u8g2.drawStr(80, 51, "WARNING!");
 }
 
 void u8g2_box_frame(uint8_t a) {
@@ -192,6 +222,7 @@ void u8g2_ascii_2() {
   }
 }
 
+
 void u8g2_extra_page(uint8_t a)
 {
   u8g2.drawStr( 0, 0, "Unicode");
@@ -231,6 +262,7 @@ void u8g2_xor(uint8_t a) {
   u8g2.setFontMode(0);
     
 }
+
 
 void u8g2_bitmap_overlay(uint8_t a) {
   uint8_t frame_size = 28;

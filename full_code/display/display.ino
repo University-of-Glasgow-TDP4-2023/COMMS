@@ -28,9 +28,8 @@ int buttonValue = analogRead(buttonPin);
 int direction;
 int stabilisation = 1; // Stabilisation ON is 1
 Timer timer;
-
-
 volatile int rstState = 0; 
+int flash_count = 0;
 
 // START OF RF Code
 #include <SPI.h>
@@ -49,6 +48,10 @@ int cableLength = 0;
 int current_motor_data = 0;
 int count = 0;
 int off_count = 0;
+uint8_t draw_state = 0;
+uint display_position = 0;
+int display_direction = 0;
+float display_speed = 0;
 
 void setupRadio() {
   Serial.begin(115200);
@@ -56,14 +59,6 @@ void setupRadio() {
     Serial.println(F("radio hardware is not responding!!"));
     while (1) {}  // hold in infinite loop
   }
-
-  // Serial.println(F("Which radio is this? Enter '0' or '1'. Defaults to '0'"));
-  // while (!Serial.available()) {
-  //   // wait for user input
-  // }
-
-  // char input = Serial.parseInt();
-  // radioNumber = input == 1;
   radioNumber = 1;
   Serial.print(F("radioNumber = "));
   Serial.println((int)radioNumber);
@@ -98,7 +93,7 @@ void RX_TX() {
     }
     role = false;
     radio.startListening();
-    delay(1000);  // slow transmissions down by 1 second
+    delay(500);  // slow transmissions down by 1 second
 
   } else {
     // This device is a RX node
@@ -138,16 +133,22 @@ void sendMotorPacket(int speed, int direction, int distance) {
   createPayload(11,payloadData);
 }
 int displayMotorData(int data) {
-  int unprocessed_speed = data / 100000;
-  float speed = unprocessed_speed;
-  speed = speed / 100;
-  int direction = (data / 10000) % 10;
-  int distance = ((data % 10000)/10)-100;
-  int error = (data % 10);
-  Serial.println(speed);
-  Serial.println(direction);
-  Serial.println(distance);
-  Serial.println(error);
+  int input_speed = data / 100000;
+  int input_direction = (data / 10000) % 10;
+  int input_distance = (data % 10000)/10;
+  int input_error = data % 10;
+  display_speed = input_speed / 100;
+  display_position = input_distance;
+  display_direction = input_direction;
+  Serial.println("Speed");
+  Serial.println(display_speed);
+  Serial.println("Direction");
+  Serial.println(input_direction);
+  Serial.println("Distance");
+  Serial.println(input_distance);
+  Serial.println("Error");
+  Serial.println(input_error);
+  
   return data;
 }
 int getData(){
@@ -204,11 +205,11 @@ void createPayload(int command, int data) {
 }
 // END OF RF Code
 
-// START OF DISPLAY CODE
+void rst_ISR(){
+  u8g2_show_error();
+}
 
-// Set Display Options
-void u8g2_prepare(void)
-{
+void u8g2_prepare(void) {
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setFontRefHeightExtendedText();
   u8g2.setDrawColor(1);
@@ -216,52 +217,16 @@ void u8g2_prepare(void)
   u8g2.setFontDirection(0);
 }
 
-uint8_t draw_state = 0;
-uint pos = 0;
-int dir = 0;
-
 void draw(void) {
   u8g2_prepare();
   if (ERR){
     u8g2_show_error();
     return;
   }
-  u8g2_main_screen(pos, getSpeed()-25, dir);
+  u8g2_main_screen(display_position, display_speed, display_direction, stabilisation, flash_count);
   if (BATTERY_LOW){
     u8g2_low_battery();
   }
-}
-
-// ISR Response
-void rst_ISR()
-{
-  u8g2_show_error();
-}
-
-
-// END OF DISPLAY CODE
-
-const char *getErrorMessage(int errorNumber)
-{
-  // Array of error messages
-  static const char *errorMessages[] = {
-      "No error",
-      "WARNING! Controller power error",
-      "WARNING! Main power error",
-      "WARNING! Stabilisation error",
-      "WARNING! Out of range error"};
-
-  // Number of errors in the array
-  int numErrors = sizeof(errorMessages) / sizeof(errorMessages[0]);
-
-  // Check if the error number is within the valid range
-  if (errorNumber < 0 || errorNumber >= numErrors)
-  {
-    return "Invalid error number";
-  }
-
-  // Return the corresponding error message
-  return errorMessages[errorNumber];
 }
 
 void setup(void) {
@@ -289,7 +254,6 @@ void setup(void) {
   gpio_set_irq_enabled_with_callback(buttonPin, GPIO_IRQ_EDGE_RISE, true, &buttonCallback);
   gpio_set_irq_enabled_with_callback(buttonPin, GPIO_IRQ_EDGE_FALL, true, &buttonCallback);
 }
-
 
 bool startup(void){
   u8g2_startup_screen();
@@ -320,41 +284,26 @@ void loop(void) {
   // picture loop  
   u8g2.firstPage();
   sendControls(getSpeed(), direction, stabilisation);
+
+  // Flashing
+  
+
   do {
     RX_TX();
     if (STARTUP){//check if device is starting up
       STARTUP = startup();
     }else{
+      flash_count = flash_count + 1;
       draw();
+      if (flash_count == 16) {
+        flash_count = 0;
+      }
     }
-    //Get position
-
-    int data = getData();
-    buttonState = digitalRead(buttonPin);
-    // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-    int unprocessed_speed = data / 100000;
-    float speed = unprocessed_speed;
-    speed = speed / 100;
-    int direction = (data / 10000) % 10;
-    int distance = ((data % 10000)/10)-100;
-    pos = distance;
-    dir = direction;
-
-
-    // End button response
     BATTERY_LOW = getBattery();
-
-    //Error response
-
     ERR = false; //get error here
-    int err_int = 0;
-    if (ERR){
-      setErr(ERR);
-      u8g2_show_error(getErrorMessage(err_int));
-    }
-    
+    setErr(ERR);
 
-
+  
   } while( u8g2.nextPage());
   
   // delay between each page

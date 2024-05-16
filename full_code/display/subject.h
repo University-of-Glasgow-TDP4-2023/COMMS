@@ -29,7 +29,7 @@ void setupPins() {
 //Returns the value of the set speed pin
 int getSpeed(void){
   int in_val = analogRead(speedPin);
-  return(in_val);
+  return  (in_val);//abs(in_val - ADC_MAX/2);
 }
 
 //Returns the value of the set select pin
