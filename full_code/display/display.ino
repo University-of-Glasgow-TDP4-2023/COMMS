@@ -204,11 +204,11 @@ void createPayload(int command, int data) {
 }
 // END OF RF Code
 
-void rst_ISR(){
-  u8g2_show_error();
-}
+// START OF DISPLAY CODE
 
-void u8g2_prepare(void) {
+// Set Display Options
+void u8g2_prepare(void)
+{
   u8g2.setFont(u8g2_font_6x10_tf);
   u8g2.setFontRefHeightExtendedText();
   u8g2.setDrawColor(1);
@@ -230,6 +230,38 @@ void draw(void) {
   if (BATTERY_LOW){
     u8g2_low_battery();
   }
+}
+
+// ISR Response
+void rst_ISR()
+{
+  u8g2_show_error();
+}
+
+
+// END OF DISPLAY CODE
+
+const char *getErrorMessage(int errorNumber)
+{
+  // Array of error messages
+  static const char *errorMessages[] = {
+      "No error",
+      "WARNING! Controller power error",
+      "WARNING! Main power error",
+      "WARNING! Stabilisation error",
+      "WARNING! Out of range error"};
+
+  // Number of errors in the array
+  int numErrors = sizeof(errorMessages) / sizeof(errorMessages[0]);
+
+  // Check if the error number is within the valid range
+  if (errorNumber < 0 || errorNumber >= numErrors)
+  {
+    return "Invalid error number";
+  }
+
+  // Return the corresponding error message
+  return errorMessages[errorNumber];
 }
 
 void setup(void) {
@@ -295,7 +327,8 @@ void loop(void) {
     }else{
       draw();
     }
-    //TODO: Get position#
+    //Get position
+
     int data = getData();
     buttonState = digitalRead(buttonPin);
     // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
@@ -306,15 +339,20 @@ void loop(void) {
     int distance = ((data % 10000)/10)-100;
     pos = distance;
     dir = direction;
-    //simulate position changing
-    //pos = (pos + 1)%100;
 
-    //TODO: Button response here
 
     // End button response
     BATTERY_LOW = getBattery();
+
+    //Error response
+
     ERR = false; //get error here
-    setErr(ERR);
+    int err_int = 0;
+    if (ERR){
+      setErr(ERR);
+      u8g2_show_error(getErrorMessage(err_int));
+    }
+    
 
 
   } while( u8g2.nextPage());

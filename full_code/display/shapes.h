@@ -108,12 +108,12 @@ void u8g2_low_battery(void) {
   u8g2.drawStr(160, 51, "Low Battery!");
 }
 
-void u8g2_show_error(void) {
+void u8g2_show_error(const char * message) {
   // 
   u8g2.setBitmapMode(1);
   u8g2.setFontMode(1);
   u8g2.setFont(u8g2_font_6x10_tr);
-  u8g2.drawStr(80, 51, "WARNING!");
+  u8g2.drawStr(80, 51, message);
 }
 
 void u8g2_box_frame(uint8_t a) {
