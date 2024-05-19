@@ -58,7 +58,7 @@ void u8g2_box_title(uint8_t a);
 void u8g2_main_screen(uint8_t position, uint8_t speed, Direction direction, Stabilisation stabilisation, int flash_count);
 void u8g2_startup_screen(void);
 void u8g2_low_battery(void);
-void u8g2_show_error(void);
+void u8g2_show_error(char *message);
 void u8g2_box_frame(uint8_t a);
 void u8g2_disc_circle(uint8_t a);
 void u8g2_r_frame(uint8_t a);
@@ -152,13 +152,13 @@ void u8g2_low_battery(void)
   u8g2.clearBuffer();
 }
 
-void u8g2_show_error(void)
+void u8g2_show_error(char *message)
 {
   u8g2.setBitmapMode(1);
   u8g2.setFontMode(1);
   u8g2.setFont(u8g2_font_6x10_tr);
   u8g2.drawStr(40, 60, "Error Occurred");
-  u8g2.drawStr(40, 80, "Restarting...");
+  u8g2.drawStr(40, 80, message);
   delay(1000);
   u8g2.clearBuffer();
 }
